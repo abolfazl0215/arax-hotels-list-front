@@ -82,7 +82,7 @@ export default function HotelDetail() {
     if (confirm("Are you sure you want to delete this hotel?")) {
       deleteHotel(hotel._id);
       const response = await axios.delete(
-        `http://localhost:5000/api/hotels/${id}`,
+        `https://arax-hotels-list-back-1.onrender.com/api/hotels/${id}`,
       );
       router.push("/");
     }
