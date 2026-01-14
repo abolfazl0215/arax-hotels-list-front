@@ -47,6 +47,9 @@ export default function EditHotel() {
           hotel.units && hotel.units.length > 0
             ? hotel.units.map((unit) => ({
                 ...unit,
+                name: unit.name || "",
+                quanntity: unit.quanntity || 1,
+                squareMeters: unit.squareMeters || 0,
                 photos:
                   unit.photos && unit.photos.length > 0
                     ? unit.photos
@@ -58,6 +61,9 @@ export default function EditHotel() {
               }))
             : [
                 {
+                  name: "",
+                  quanntity: 1,
+                  squareMeters: 0,
                   photos: [""],
                   numOftwinBeds: 0,
                   numOfSingleBeds: 0,
@@ -177,6 +183,9 @@ export default function EditHotel() {
       units: [
         ...prev.units,
         {
+          name: "",
+          quanntity: 1,
+          squareMeters: 0,
           photos: [""],
           numOftwinBeds: 0,
           numOfSingleBeds: 0,
@@ -220,7 +229,7 @@ export default function EditHotel() {
 
     updateHotel(hotel._id, { ...cleanedData, type: "hotel" });
     const response = await axios.put(
-      `https://arax-hotels-list-back-1.onrender.com/api/hotels/${hotel._id}`,
+      `http://localhost:5000/api/hotels/${hotel._id}`,
       cleanedData,
     );
     router.push(`/hotel/${hotel._id}`);
@@ -788,6 +797,69 @@ export default function EditHotel() {
                         Remove Unit
                       </button>
                     )}
+                  </div>
+
+                  {/* Unit basic info: name, quantity, square meters */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Unit Name
+                      </label>
+                      <input
+                        type="text"
+                        value={unit.name}
+                        onChange={(e) =>
+                          handleUnitChange(
+                            unitIndex,
+                            "name",
+                            e.target.value,
+                          )
+                        }
+                        className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        placeholder="e.g., Deluxe Room"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Quantity
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={unit.quanntity}
+                        onChange={(e) =>
+                          handleUnitChange(
+                            unitIndex,
+                            "quanntity",
+                            Number(e.target.value),
+                          )
+                        }
+                        className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        placeholder="1"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Square Meters
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={unit.squareMeters}
+                        onChange={(e) =>
+                          handleUnitChange(
+                            unitIndex,
+                            "squareMeters",
+                            Number(e.target.value),
+                          )
+                        }
+                        className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                        placeholder="0"
+                      />
+                    </div>
                   </div>
 
                   {/* Unit Photos */}

@@ -62,19 +62,26 @@ export default function HotelDetail() {
   };
 
   const renderBeds = (unit) => {
+    // Aggregate bed counts by type and return an array with counts
+    const twin = unit.numOftwinBeds || 0;
+    const single = unit.numOfSingleBeds || 0;
+    const king = unit.numOfKingBeds || 0;
+    const queen = unit.numOfQueenBeds || 0;
+
     const beds = [];
-    for (let i = 0; i < unit.numOftwinBeds; i++) {
-      beds.push({ type: "twin", label: "Twin Bed" });
-    }
-    for (let i = 0; i < unit.numOfSingleBeds; i++) {
-      beds.push({ type: "single", label: "Single Bed" });
-    }
-    for (let i = 0; i < unit.numOfKingBeds; i++) {
-      beds.push({ type: "king", label: "King Bed" });
-    }
-    for (let i = 0; i < unit.numOfQueenBeds; i++) {
-      beds.push({ type: "queen", label: "Queen Bed" });
-    }
+    if (twin > 0)
+      beds.push({ type: "twin", label: "Twin Bed", count: twin });
+    if (single > 0)
+      beds.push({
+        type: "single",
+        label: "Single Bed",
+        count: single,
+      });
+    if (king > 0)
+      beds.push({ type: "king", label: "King Bed", count: king });
+    if (queen > 0)
+      beds.push({ type: "queen", label: "Queen Bed", count: queen });
+
     return beds;
   };
 
@@ -82,7 +89,7 @@ export default function HotelDetail() {
     if (confirm("Are you sure you want to delete this hotel?")) {
       deleteHotel(hotel._id);
       const response = await axios.delete(
-        `https://arax-hotels-list-back-1.onrender.com/api/hotels/${id}`,
+        `http://localhost:5000/api/hotels/${id}`,
       );
       router.push("/");
     }
@@ -380,6 +387,45 @@ export default function HotelDetail() {
 
                         {/* Unit Info */}
                         <div className="space-y-4">
+                          {/* Basic Details */}
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">
+                              Details
+                            </h4>
+                            <div className="flex flex-wrap gap-4 text-gray-300">
+                              {unit.name && (
+                                <div className="glass px-3 py-2 rounded-lg">
+                                  <span className="text-sm text-gray-400 block">
+                                    Name
+                                  </span>
+                                  <span className="font-semibold">
+                                    {unit.name}
+                                  </span>
+                                </div>
+                              )}
+
+                              <div className="glass px-3 py-2 rounded-lg">
+                                <span className="text-sm text-gray-400 block">
+                                  Quantity
+                                </span>
+                                <span className="font-semibold">
+                                  {unit.quanntity ??
+                                    unit.quantity ??
+                                    0}
+                                </span>
+                              </div>
+
+                              <div className="glass px-3 py-2 rounded-lg">
+                                <span className="text-sm text-gray-400 block">
+                                  Size
+                                </span>
+                                <span className="font-semibold">
+                                  {unit.squareMeters ?? "-"} m²
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
                           {/* Beds */}
                           <div>
                             <h4 className="text-lg font-semibold text-white mb-2">
@@ -393,8 +439,13 @@ export default function HotelDetail() {
                                   <span className="text-2xl">
                                     {getBedIcon(bed.type)}
                                   </span>
-                                  <span className="text-gray-300">
-                                    {bed.label}
+                                  <span className="text-gray-300 flex items-center gap-2">
+                                    <span>{bed.label}</span>
+                                    {bed.count > 1 && (
+                                      <span className="text-gray-400">
+                                        *{bed.count}
+                                      </span>
+                                    )}
                                   </span>
                                 </div>
                               ))}

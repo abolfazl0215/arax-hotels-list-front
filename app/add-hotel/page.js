@@ -35,6 +35,9 @@ export default function AddHotel() {
     photos: [""],
     units: [
       {
+        name: "",
+        quanntity: 1,
+        squareMeters: 0,
         photos: [""],
         numOftwinBeds: 0,
         numOfSingleBeds: 0,
@@ -125,6 +128,9 @@ export default function AddHotel() {
       units: [
         ...prev.units,
         {
+          name: "",
+          quanntity: 1,
+          squareMeters: 0,
           photos: [""],
           numOftwinBeds: 0,
           numOfSingleBeds: 0,
@@ -169,7 +175,7 @@ export default function AddHotel() {
     console.log({ cleanedData });
     setLoading(true);
     const response = await axios.post(
-      "https://arax-hotels-list-back-1.onrender.com/api/hotels",
+      "http://localhost:5000/api/hotels",
       cleanedData,
     );
     console.log(response);
@@ -615,6 +621,65 @@ export default function AddHotel() {
                         Remove Unit
                       </button>
                     )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-gray-300 mb-2">
+                        Unit Name
+                      </label>
+                      <input
+                        type="text"
+                        value={unit.name}
+                        onChange={(e) =>
+                          handleUnitChange(
+                            unitIndex,
+                            "name",
+                            e.target.value,
+                          )
+                        }
+                        className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-300 mb-2">
+                        Quantity
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={unit.quanntity}
+                        onChange={(e) =>
+                          handleUnitChange(
+                            unitIndex,
+                            "quanntity",
+                            Number(e.target.value),
+                          )
+                        }
+                        className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-300 mb-2">
+                        Square Meters
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={unit.squareMeters}
+                        onChange={(e) =>
+                          handleUnitChange(
+                            unitIndex,
+                            "squareMeters",
+                            Number(e.target.value),
+                          )
+                        }
+                        className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
                   </div>
 
                   <div>
