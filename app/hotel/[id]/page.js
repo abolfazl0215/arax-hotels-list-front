@@ -85,6 +85,35 @@ export default function HotelDetail() {
     return beds;
   };
 
+  const renderStars = (count) => {
+    const n = Math.max(0, Math.floor(count || 0));
+    const stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push(
+        <svg
+          key={i}
+          className="w-4 h-4"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M10 1.5l2.39 4.846 5.346.777-3.868 3.77.912 5.322L10 14.77l-4.78 2.443.913-5.322L2.266 7.123l5.346-.777L10 1.5z"
+            fill="#F6C94C"
+          />
+        </svg>,
+      );
+    }
+
+    return (
+      <div className="flex items-center gap-3 mt-1">
+        <div className="flex items-center gap-1 text-yellow-400">
+          {stars}
+        </div>
+        <span className="text-gray-300 font-semibold">{count}</span>
+      </div>
+    );
+  };
+
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this hotel?")) {
       deleteHotel(hotel._id);
@@ -113,10 +142,13 @@ export default function HotelDetail() {
         <div className="glass-strong rounded-2xl p-5 mb-3">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <div className="flex justify-between items-start">
-                <h1 className="text-3xl font-bold text-white mb-2">
-                  {hotel.name}
-                </h1>
+              <div className="flex gap-3 justify-between items-start">
+                <div>
+                  <h1 className="text-3xl font-bold text-white mb-2">
+                    {hotel.name}
+                  </h1>
+                  {renderStars(hotel.stars)}
+                </div>
                 <div className="flex gap-2">
                   <Link
                     href={`/edit-hotel/${hotel._id}`}

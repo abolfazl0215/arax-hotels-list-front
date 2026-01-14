@@ -26,6 +26,7 @@ export default function EditHotel() {
         website: hotel.website || "",
         whatsapp: hotel.whatsapp || "",
         retesDescription: hotel.retesDescription || "",
+        stars: hotel.stars || 0,
         ratesInfo: hotel.ratesInfo || {
           hotelCost: 0,
           referralCommission: 0,
@@ -310,6 +311,26 @@ export default function EditHotel() {
                     }
                     className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="Enter full address"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    تعداد ستاره (Stars)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="5"
+                    value={formData.stars}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "stars",
+                        Number(e.target.value),
+                      )
+                    }
+                    className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    placeholder="0"
                   />
                 </div>
 

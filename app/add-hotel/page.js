@@ -16,6 +16,7 @@ export default function AddHotel() {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
+    stars: 0,
     location: { lat: 0, lng: 0 },
     tel: [""],
     email: "",
@@ -241,6 +242,23 @@ export default function AddHotel() {
                   value={formData.address}
                   onChange={(e) =>
                     handleInputChange("address", e.target.value)
+                  }
+                  className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  تعداد ستاره
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="1"
+                  value={formData.stars}
+                  onChange={(e) =>
+                    handleInputChange("stars", Number(e.target.value))
                   }
                   className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />

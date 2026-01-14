@@ -296,9 +296,35 @@ export default function Home() {
                       {/* Hotel Info */}
                       <div className="flex-1 p-2 sm:p-3 min-w-0 flex flex-col justify-between">
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <h2 className="text-lg sm:text-base font-bold text-white truncate flex-1 min-w-0">
-                            {hotel.name}
-                          </h2>
+                          <div className="flex-1 min-w-0">
+                            <h2 className="text-lg sm:text-base font-bold text-white truncate">
+                              {hotel.name}
+                            </h2>
+                            <div className="flex gap-3 items-center mt-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-yellow-400 text-sm leading-none">
+                                  {(hotel.stars || 0) > 0
+                                    ? "★".repeat(hotel.stars || 0)
+                                    : "—"}
+                                </span>
+                                <span className="text-gray-300 text-xs">
+                                  {hotel.stars || 0}
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {[
+                                  `${hotel.units.length} واحد`,
+                                  ...hotel.options,
+                                ].map((option, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="px-2 py-0.5 rounded-full glass text-sm sm:text-xs font-light text-gray-300">
+                                    {option}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
                           <div className="text-right shrink-0">
                             <p className="text-[10px] sm:text-xs text-gray-400 whitespace-nowrap">
                               From
@@ -307,19 +333,6 @@ export default function Home() {
                               ${getMinPrice(hotel).toLocaleString()}
                             </p>
                           </div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-1.5 mb-1.5">
-                          {[
-                            `${hotel.units.length} واحد`,
-                            ...hotel.options,
-                          ].map((option, idx) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-0.5 rounded-full glass text-sm sm:text-xs font-light text-gray-300">
-                              {option}
-                            </span>
-                          ))}
                         </div>
                       </div>
                     </div>
@@ -341,17 +354,29 @@ export default function Home() {
                         <h2 className="text-lg font-bold text-white truncate mb-1">
                           {hotel.name}
                         </h2>
-                        <div className="flex flex-wrap gap-1.5">
-                          {[
-                            `${hotel.units.length} واحد`,
-                            ...hotel.options.slice(0, 3),
-                          ].map((option, idx) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-0.5 rounded-full glass text-xs font-light text-gray-300">
-                              {option}
+                        <div className="flex gap-3 mt-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-yellow-400 text-sm leading-none">
+                              {(hotel.stars || 0) > 0
+                                ? "★".repeat(hotel.stars || 0)
+                                : "—"}
                             </span>
-                          ))}
+                            <span className="text-gray-300 text-xs">
+                              {hotel.stars || 0}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {[
+                              `${hotel.units.length} واحد`,
+                              ...hotel.options.slice(0, 3),
+                            ].map((option, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-0.5 rounded-full glass text-xs font-light text-gray-300">
+                                {option}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
 
