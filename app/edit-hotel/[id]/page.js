@@ -231,7 +231,7 @@ export default function EditHotel() {
 
     updateHotel(hotel._id, { ...cleanedData, type: "hotel" });
     const response = await axios.put(
-      `http://localhost:5000/api/hotels/${hotel._id}`,
+      `https://arax-hotels-list-back.onrender.com/api/hotels/${hotel._id}`,
       cleanedData,
     );
     router.push(`/hotel/${hotel._id}`);
