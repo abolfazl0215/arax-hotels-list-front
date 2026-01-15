@@ -118,7 +118,7 @@ export default function HotelDetail() {
     if (confirm("Are you sure you want to delete this hotel?")) {
       deleteHotel(hotel._id);
       const response = await axios.delete(
-        `https://arax-hotels-list-back-1.onrender.com/api/hotels/${id}`,
+        `https://arax-hotels-list-back.onrender.com/api/hotels/${id}`,
       );
       router.push("/");
     }
