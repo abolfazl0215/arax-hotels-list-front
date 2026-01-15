@@ -66,7 +66,7 @@ export default function Home() {
     setLoading(true);
     try {
       const response = await axios.get(
-        "https://arax-hotels-list-back.onrender.com/api/hotels",
+        "http://localhost:5000/api/hotels",
       );
       setHotels(response.data.data);
       console.log({ data: response.data.data });

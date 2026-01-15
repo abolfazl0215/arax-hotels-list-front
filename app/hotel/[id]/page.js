@@ -19,6 +19,10 @@ export default function HotelDetail() {
     useHotelStore();
   const [activeTab, setActiveTab] = useState("info");
   const [imageErrors, setImageErrors] = useState({});
+  const [showPriceHistory, setShowPriceHistory] = useState(false);
+  const [selectedUnitForHistory, setSelectedUnitForHistory] =
+    useState(null);
+  const [priceHistoryFilter, setPriceHistoryFilter] = useState("all");
 
   const hotel = hotels.find((h) => h._id === params.id);
 
@@ -39,10 +43,17 @@ export default function HotelDetail() {
     );
   }
 
+  const handleOpenPriceHistory = (unit, unitIndex) => {
+    setSelectedUnitForHistory({ unit, unitIndex });
+    setPriceHistoryFilter("all");
+    setShowPriceHistory(true);
+  };
+
   const getPriceForSeason = (unit) => {
     const priceObj = unit.pricePerNight.find(
       (p) => p.season === selectedSeason,
     );
+    console.log({ priceObj });
     return priceObj ? priceObj.price : unit.pricePerNight[0].price;
   };
 
@@ -118,7 +129,7 @@ export default function HotelDetail() {
     if (confirm("Are you sure you want to delete this hotel?")) {
       deleteHotel(hotel._id);
       const response = await axios.delete(
-        `https://arax-hotels-list-back.onrender.com/api/hotels/${id}`,
+        `http://localhost:5000/api/hotels/${id}`,
       );
       router.push("/");
     }
@@ -545,6 +556,25 @@ export default function HotelDetail() {
                                 ).toLocaleString()}
                               </p>
                             </div>
+                            <button
+                              onClick={() =>
+                                handleOpenPriceHistory(unit, unitIdx)
+                              }
+                              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-300 flex items-center gap-2">
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              Price History
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -722,6 +752,183 @@ export default function HotelDetail() {
           </div>
         </div>
       </div>
+
+      {/* Price History Modal */}
+      {showPriceHistory && selectedUnitForHistory && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="glass-strong rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 flex items-center justify-between border-b border-white/10">
+              <div>
+                <h2 className="text-2xl font-bold text-white">
+                  Price History
+                </h2>
+                <p className="text-blue-100 text-sm mt-1">
+                  Unit {selectedUnitForHistory.unitIndex + 1}
+                  {selectedUnitForHistory.unit.name && (
+                    <span> - {selectedUnitForHistory.unit.name}</span>
+                  )}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowPriceHistory(false)}
+                className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Season Tabs */}
+            <div className="sticky top-16 bg-white/5 border-b border-white/10 px-4 py-3 flex gap-2 overflow-x-auto">
+              <button
+                onClick={() => setPriceHistoryFilter("all")}
+                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-300 font-semibold ${
+                  priceHistoryFilter === "all"
+                    ? "bg-blue-600 text-white"
+                    : "glass text-gray-300 hover:bg-white/10"
+                }`}>
+                All
+              </button>
+              <button
+                onClick={() => setPriceHistoryFilter("low")}
+                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-300 font-semibold flex items-center gap-2 ${
+                  priceHistoryFilter === "low"
+                    ? "bg-blue-600 text-white"
+                    : "glass text-gray-300 hover:bg-white/10"
+                }`}>
+                <span>🌱</span>
+                Low
+              </button>
+              <button
+                onClick={() => setPriceHistoryFilter("high")}
+                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-300 font-semibold flex items-center gap-2 ${
+                  priceHistoryFilter === "high"
+                    ? "bg-blue-600 text-white"
+                    : "glass text-gray-300 hover:bg-white/10"
+                }`}>
+                <span>🔥</span>
+                High
+              </button>
+              <button
+                onClick={() => setPriceHistoryFilter("peak")}
+                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-300 font-semibold flex items-center gap-2 ${
+                  priceHistoryFilter === "peak"
+                    ? "bg-blue-600 text-white"
+                    : "glass text-gray-300 hover:bg-white/10"
+                }`}>
+                <span>⭐</span>
+                Peak
+              </button>
+              <button
+                onClick={() => setPriceHistoryFilter("event")}
+                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-300 font-semibold flex items-center gap-2 ${
+                  priceHistoryFilter === "event"
+                    ? "bg-blue-600 text-white"
+                    : "glass text-gray-300 hover:bg-white/10"
+                }`}>
+                <span>🎉</span>
+                Event
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-4">
+              {selectedUnitForHistory.unit.priceHistory &&
+              selectedUnitForHistory.unit.priceHistory.length > 0 ? (
+                <div className="space-y-3">
+                  {selectedUnitForHistory.unit.priceHistory
+                    .filter(
+                      (item) =>
+                        priceHistoryFilter === "all" ||
+                        item.season === priceHistoryFilter,
+                    )
+                    .map((item, idx) => (
+                      <div
+                        key={item._id || idx}
+                        className="glass rounded-xl p-4 hover:bg-white/5 transition-colors">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-600/20 text-blue-400 text-sm font-semibold">
+                                {item.season === "low" && "🌱 Low"}
+                                {item.season === "high" && "🔥 High"}
+                                {item.season === "peak" && "⭐ Peak"}
+                                {item.season === "event" &&
+                                  "🎉 Event"}
+                              </span>
+                              <span className="text-gray-400 text-sm">
+                                #{idx + 1}
+                              </span>
+                            </div>
+                            <p className="text-gray-300 mb-2">
+                              <span className="text-gray-400 text-sm">
+                                Changed at:
+                              </span>{" "}
+                              {new Date(
+                                item.changedAt,
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-3xl font-bold text-blue-400">
+                              ${item.price.toLocaleString()}
+                            </p>
+                            <p className="text-gray-400 text-xs mt-1">
+                              per night
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <svg
+                    className="w-16 h-16 mx-auto text-gray-600 mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p className="text-gray-400">
+                    No price history available
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-white/5 border-t border-white/10 px-6 py-4 flex justify-end">
+              <button
+                onClick={() => setShowPriceHistory(false)}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-300 font-semibold">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

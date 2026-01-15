@@ -176,7 +176,7 @@ export default function AddHotel() {
     console.log({ cleanedData });
     setLoading(true);
     const response = await axios.post(
-      "https://arax-hotels-list-back.onrender.com/api/hotels",
+      "http://localhost:5000/api/hotels",
       cleanedData,
     );
     console.log(response);
