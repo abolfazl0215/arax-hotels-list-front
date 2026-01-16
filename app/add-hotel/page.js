@@ -17,7 +17,7 @@ export default function AddHotel() {
     name: "",
     address: "",
     stars: 0,
-    location: { lat: 0, lng: 0 },
+    distanceToCenter: 0,
     tel: [""],
     email: "",
     website: "",
@@ -264,43 +264,21 @@ export default function AddHotel() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Latitude
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    value={formData.location.lat}
-                    onChange={(e) =>
-                      handleNestedChange(
-                        "location",
-                        "lat",
-                        Number(e.target.value),
-                      )
-                    }
-                    className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 mb-2">
-                    Longitude
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    value={formData.location.lng}
-                    onChange={(e) =>
-                      handleNestedChange(
-                        "location",
-                        "lng",
-                        Number(e.target.value),
-                      )
-                    }
-                    className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  فاصله تا مرکز (دقیقه)
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  min="0"
+                  value={formData.distanceToCenter}
+                  onChange={(e) =>
+                    handleInputChange("distanceToCenter", Number(e.target.value))
+                  }
+                  className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="فاصله تا مرکز (دقیقه)"
+                />
               </div>
 
               <div>

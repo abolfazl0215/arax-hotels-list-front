@@ -20,7 +20,7 @@ export default function EditHotel() {
       setFormData({
         name: hotel.name || "",
         address: hotel.address || "",
-        location: hotel.location || { lat: 0, lng: 0 },
+        distanceToCenter: hotel.distanceToCenter || 0,
         tel: hotel.tel && hotel.tel.length > 0 ? hotel.tel : [""],
         email: hotel.email || "",
         website: hotel.website || "",
@@ -337,41 +337,18 @@ export default function EditHotel() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Latitude
+                    فاصله تا مرکز (دقیقه)
                   </label>
                   <input
                     type="number"
                     step="any"
-                    value={formData.location.lat}
+                    min="0"
+                    value={formData.distanceToCenter}
                     onChange={(e) =>
-                      handleNestedChange(
-                        "location",
-                        "lat",
-                        Number(e.target.value),
-                      )
+                      handleInputChange("distanceToCenter", Number(e.target.value))
                     }
                     className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="0.000000"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Longitude
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    value={formData.location.lng}
-                    onChange={(e) =>
-                      handleNestedChange(
-                        "location",
-                        "lng",
-                        Number(e.target.value),
-                      )
-                    }
-                    className="w-full px-4 py-3 rounded-lg glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="0.000000"
+                    placeholder="فاصله تا مرکز (دقیقه)"
                   />
                 </div>
 

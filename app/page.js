@@ -6,6 +6,8 @@ import Image from "next/image";
 import useHotelStore from "./store/hotelStore";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
+import FilterModal from "./components/FilterModal";
+import { applyAdvancedFilters, getAllAmenities } from "./utils/filterUtils";
 
 export default function Home() {
   const {
@@ -22,6 +24,8 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
+  const [activeFilters, setActiveFilters] = useState(null);
+  const [allAmenities, setAllAmenities] = useState([]);
 
   // بارگذاری مقدار localStorage فقط در کلاینت
   useEffect(() => {
@@ -48,12 +52,26 @@ export default function Home() {
     }
   }, [showImages, mounted]);
 
-  const filteredHotels = hotels.filter((hotel) => {
-    const matchesSearch =
-      hotel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      hotel.address.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
-  });
+  // فیلتر کردن هتل‌ها بر اساس جستجو و فیلترهای پیشرفته
+  const filteredHotels = (() => {
+    let result = hotels;
+
+    // فیلتر جستجو
+    if (searchQuery.trim()) {
+      result = result.filter(
+        (hotel) =>
+          hotel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          hotel.address.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
+    // فیلترهای پیشرفته
+    if (activeFilters) {
+      result = applyAdvancedFilters(result, activeFilters);
+    }
+
+    return result;
+  })();
 
   const getPriceForSeason = (unit) => {
     const priceObj = unit.pricePerNight.find(
@@ -80,6 +98,14 @@ export default function Home() {
   useEffect(() => {
     getData();
   }, []);
+
+  // استخراج تمام امکانات از هتل‌ها
+  useEffect(() => {
+    if (hotels.length > 0) {
+      const amenities = getAllAmenities(hotels);
+      setAllAmenities(amenities);
+    }
+  }, [hotels]);
 
   const getMinPrice = (hotel) => {
     const prices = hotel.units.flatMap((unit) =>
@@ -209,9 +235,15 @@ export default function Home() {
               </button>
             </div>
 
+            {/* Filter Button */}
+            <FilterModal
+              allAmenities={allAmenities}
+              onFilterChange={setActiveFilters}
+            />
+
             <Link
               href="/add-hotel"
-              className="glass px-6 py-2 rounded-lg text-white hover:bg-white/20 transition-all duration-300 flex items-center gap-2">
+              className="glass px-2 py-2 rounded-lg text-white hover:bg-white/20 transition-all duration-300 flex items-center gap-2">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -301,7 +333,7 @@ export default function Home() {
                             <h2 className="text-lg sm:text-base font-bold text-white truncate">
                               {hotel.name}
                             </h2>
-                            <div className="flex gap-3 items-center mt-1">
+                            <div className="flex flex-wrap gap-3 items-center mt-1">
                               <div className="flex items-center gap-2">
                                 <span className="text-yellow-400 text-sm leading-none">
                                   {(hotel.stars || 0) > 0
@@ -313,10 +345,29 @@ export default function Home() {
                                 </span>
                               </div>
                               <div className="flex flex-wrap gap-1.5">
-                                {[
-                                  `${hotel.units.length} واحد`,
-                                  ...hotel.options,
-                                ].map((option, idx) => (
+                                <span className="px-2 py-0.5 rounded-full glass text-sm sm:text-xs font-light text-gray-300">
+                                  {hotel.units.length} واحد
+                                </span>
+                                {hotel.distanceToCenter !== undefined &&
+                                  hotel.distanceToCenter !== null && (
+                                    <span className="px-2 py-0.5 rounded-full glass text-sm sm:text-xs font-light text-gray-300 flex items-center gap-1">
+                                      <svg
+                                        className="w-3 h-3"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                      </svg>
+                                      <span>{hotel.distanceToCenter}</span>
+                                      <span>center</span>
+                                    </span>
+                                  )}
+                                {hotel.options.map((option, idx) => (
                                   <span
                                     key={idx}
                                     className="px-2 py-0.5 rounded-full glass text-sm sm:text-xs font-light text-gray-300">
@@ -355,7 +406,7 @@ export default function Home() {
                         <h2 className="text-lg font-bold text-white truncate mb-1">
                           {hotel.name}
                         </h2>
-                        <div className="flex gap-3 mt-1">
+                        <div className="flex flex-wrap gap-3 mt-1">
                           <div className="flex items-center gap-2">
                             <span className="text-yellow-400 text-sm leading-none">
                               {(hotel.stars || 0) > 0
@@ -367,10 +418,29 @@ export default function Home() {
                             </span>
                           </div>
                           <div className="flex flex-wrap gap-1.5">
-                            {[
-                              `${hotel.units.length} واحد`,
-                              ...hotel.options.slice(0, 3),
-                            ].map((option, idx) => (
+                            <span className="px-2 py-0.5 rounded-full glass text-xs font-light text-gray-300">
+                              {hotel.units.length} واحد
+                            </span>
+                            {hotel.distanceToCenter !== undefined &&
+                              hotel.distanceToCenter !== null && (
+                                <span className="px-2 py-0.5 rounded-full glass text-xs font-light text-gray-300 flex items-center gap-1">
+                                  <svg
+                                    className="w-3 h-3"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
+                                  </svg>
+                                  <span>{hotel.distanceToCenter}</span>
+                                  <span>center</span>
+                                </span>
+                              )}
+                            {hotel.options.slice(0, 3).map((option, idx) => (
                               <span
                                 key={idx}
                                 className="px-2 py-0.5 rounded-full glass text-xs font-light text-gray-300">
@@ -397,6 +467,8 @@ export default function Home() {
             })
           )}
         </div>
+
+
       </div>
     </div>
   );
