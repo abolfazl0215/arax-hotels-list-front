@@ -367,7 +367,7 @@ export default function Home() {
                                       <span>center</span>
                                     </span>
                                   )}
-                                {hotel.options.map((option, idx) => (
+                                {(hotel.options || []).map((option, idx) => (
                                   <span
                                     key={idx}
                                     className="px-2 py-0.5 rounded-full glass text-sm sm:text-xs font-light text-gray-300">
@@ -395,7 +395,7 @@ export default function Home() {
           ) : (
             // Compact view without images
             filteredHotels.map((hotel) => {
-              const hotelId = hotel._id || hotel_.id;
+              const hotelId = hotel._id;
 
               return (
                 <Link key={hotelId} href={`/hotel/${hotelId}`}>
@@ -440,7 +440,7 @@ export default function Home() {
                                   <span>center</span>
                                 </span>
                               )}
-                            {hotel.options.slice(0, 3).map((option, idx) => (
+                            {(hotel.options || []).slice(0, 3).map((option, idx) => (
                               <span
                                 key={idx}
                                 className="px-2 py-0.5 rounded-full glass text-xs font-light text-gray-300">
